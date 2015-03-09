@@ -24,7 +24,7 @@ print(mongo.count(mongo, c))
 d <- mongo.find.all(mongo, c, data.frame = TRUE)
 d$startD <- strptime(d$start, "%d-%m-%Y %H:%M")
 d$endD <- strptime(d$end, "%d-%m-%Y %H:%M")
-d$duration <- as.numeric(d$endD - d$startD)
+d$duration <- as.numeric(d$endD - d$startD) / 60
 d <- d[order(d$startD, decreasing = T), ]
 
 kentekens <- mongo.find.all(mongo, k, data.frame = TRUE)
@@ -47,14 +47,13 @@ shinyServer(function(input, output) {
     # draw the histogram with the specified number of bins
     #hist(x, breaks = bins, col = 'skyblue', border = 'black', main = "aap")
     ggplot(d, aes(x = as.character(floor_date(startD, 'day')), 
-                  y = round(duration / 60, 0), fill = kenteken)) +
+                  y = duration, fill = kenteken)) +
       geom_bar(stat = "identity") + 
       labs(x = "datum", y = "aantal minuten",
            title = 'Aantal minuten per dag, gesplitst per auto')
     
   })
-  
-  
+ 
   output$view <- renderTable({
     tab <- subset(d, select=c(start, end, duration , kenteken, kleur, type))
   }, include.rownames = FALSE)
