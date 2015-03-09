@@ -8,6 +8,9 @@
 library(shiny)
 
 shinyUI(navbarPage("Parkeerkaarten",
-                   tabPanel("Tabel", tableOutput("view")),
+                   tabPanel("Tabel", 
+                            h3(textOutput("tot_time")),
+                            h4(textOutput("tot_per")),
+                            tableOutput("view")),
                    tabPanel("Grafiek per dag", plotOutput("distPlot"))
 ))

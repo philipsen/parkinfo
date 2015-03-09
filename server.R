@@ -26,6 +26,10 @@ d$startD <- strptime(d$start, "%d-%m-%Y %H:%M")
 d$endD <- strptime(d$end, "%d-%m-%Y %H:%M")
 d$duration <- as.numeric(d$endD - d$startD) / 60
 d <- d[order(d$startD, decreasing = T), ]
+total_minutes <- sum(d$duration)
+pm = round(total_minutes / ((408 + 360) * 60) * 100, 1)
+py <- round((yday(Sys.time()) - 31 - 28) / 365 * 100, 1)
+
 
 kentekens <- mongo.find.all(mongo, k, data.frame = TRUE)
 m <- match(d$kenteken, kentekens$kenteken)
@@ -58,5 +62,10 @@ shinyServer(function(input, output) {
     tab <- subset(d, select=c(start, end, duration , kenteken, kleur, type))
   }, include.rownames = FALSE)
 
+  output$tot_time <- renderText(paste("Totaal gebruikt:", floor(total_minutes / 60),
+                                      "uur en", (total_minutes %% 60), "minuten"))
+  output$tot_per <- renderText(paste(pm, "% van de uren gebruikt in", 
+                                     py,
+                                     "% van de dagen"))
 })
 
