@@ -50,11 +50,12 @@ shinyServer(function(input, output) {
 
     # draw the histogram with the specified number of bins
     #hist(x, breaks = bins, col = 'skyblue', border = 'black', main = "aap")
-    ggplot(d, aes(x = as.character(floor_date(startD, 'day')), 
+    ggplot(d, aes(x = (as.Date(startD, 'day')), 
                   y = duration, fill = kenteken)) +
       geom_bar(stat = "identity") + 
       labs(x = "datum", y = "aantal minuten",
-           title = 'Aantal minuten per dag, gesplitst per auto')
+           title = 'Aantal minuten per dag, gesplitst per auto') +
+      scale_x_date(limits = c(as.Date("2015-3-1"), as.Date(Sys.time())))
     
   })
  
