@@ -52,10 +52,17 @@ shinyServer(function(input, output) {
     
   })
  
+  tab <- subset(d, select=c(start, end, duration, kenteken, kleur, type))
+  ds <- str_c(d$duration %% 60, " minuten")
+  ds[d$duration %% 60 == 0] <- ''
+  ds[d$duration > 59] <- str_c(floor(d$duration[d$duration > 59] / 60), " uur en ", ds[d$duration > 59])
+  tab$duration <- ds
   output$view <- renderTable({
-    tab <- subset(d, select=c(start, end, duration , kenteken, kleur, type))
-  }, include.rownames = FALSE)
+    tab
+    
+  }, include.rownames = FALSE, digits = 0)
 
+  
   output$tot_time <- renderText(paste("Totaal gebruikt:", floor(total_minutes / 60),
                                       "uur en", (total_minutes %% 60), "minuten"))
   output$tot_per <- renderText(paste(pm, "% van de uren gebruikt in", 
